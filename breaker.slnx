@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="breaker/breaker.vcxproj" Id="a96a4576-f517-4ee6-b157-4db04130cc49" />
+</Solution>
