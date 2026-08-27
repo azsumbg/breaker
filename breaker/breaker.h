@@ -28,7 +28,7 @@ enum class dirs { stop = 0, left = 1, right = 2, up = 3, down = 4 };
 enum class bricks { yellow = 0, blue = 1, red = 2, green = 3, orange = 4, stone = 5 };
 enum class assets { triple = 0, life = 1, shorten = 2, strech = 3 };
 enum class pads { normal = 0, large = 1, extra_large = 2 };
-
+enum class bumps { no_bump = 0, on_pad = 1, on_left = 2, on_right = 3, on_top = 4, out = 5 };
 
 struct BRICK
 {
@@ -66,6 +66,9 @@ namespace dll
 
 		const wchar_t* getErr()const;
 	};
+
+	
+	#pragma warning(disable : 26439)
 
 	template<typename T> class BAG
 	{
@@ -509,5 +512,47 @@ namespace dll
 		static PAD* create(float sx, float sy);
 	};
 
+	class BREAKER_API BALL :public PROTON
+	{
+	private:
+		float speed{ 5.0f };
+
+		bool hor_dir = false;
+		bool ver_dir = false;
+
+		float move_sx{ 0 };
+		float move_ex{ 0 };
+		float move_sy{ 0 };
+		float move_ey{ 0 };
+
+		float slope{ 0 };
+		float intercept{ 0 };
+
+		int frame{ 0 };
+		int max_frames{ 3 };
+		int frame_delay{ 20 };
+		int max_frame_delay{ 20 };
+
+		BALL(float _sx, float _sy);
+
+	public:
+
+		float get_init_x() const;
+		float get_init_y() const;
+		float get_target_x() const;
+		float get_target_y() const;
+
+		int get_frame();
+
+		void set_speed(float new_speed);
+
+		void set_path(float target_x, float target_y);
+
+		bumps move(float gear);
+
+		void Release();
+
+		static BALL* create(float sx, float sy);
+	};
 
 }

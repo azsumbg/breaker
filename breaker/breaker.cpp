@@ -510,3 +510,175 @@ dll::PAD* dll::PAD::create(float sx, float sy)
 }
 
 ////////////////////////////////////////
+
+// BALL CLASS **************************
+
+dll::BALL::BALL(float _sx, float _sy) :PROTON(_sx, _sy, 20.0f, 13.0f) {};
+
+float dll::BALL::get_init_x() const
+{
+	return move_sx;
+}
+float dll::BALL::get_init_y() const
+{
+	return move_sy;
+}
+float dll::BALL::get_target_x() const
+{
+	return move_ex;
+}
+float dll::BALL::get_target_y() const
+{
+	return move_sy;
+}
+
+int dll::BALL::get_frame()
+{
+	--frame_delay;
+	if (frame_delay <= 0)
+	{
+		frame_delay = max_frame_delay;
+		++frame;
+		if (frame > max_frames)frame = 0;
+	}
+
+	return frame;
+}
+void dll::BALL::set_speed(float new_speed)
+{
+	speed = new_speed;
+}
+
+void dll::BALL::set_path(float target_x, float target_y)
+{
+	ver_dir = false;
+	hor_dir = false;
+
+	move_sx = start.x;
+	move_ex = target_x;
+
+	move_sy = start.y;
+	move_ey = target_y;
+
+	if (move_sx == move_ex || (move_ex > move_sx && move_ex <= end.x))
+	{
+		ver_dir = true;
+		return;
+	}
+	if (move_sy == move_ey || (move_ey > move_sy && move_ey <= end.y))
+	{
+		hor_dir = true;
+		return;
+	}
+
+	slope = (move_ey - move_sy) / (move_ex - move_sx);
+	intercept = start.y - start.x * slope;
+}
+
+bumps dll::BALL::move(float gear)
+{
+	float my_speed = speed + gear / 5.0f;
+
+	if (hor_dir)
+	{
+		if (move_sx > move_ex)
+		{
+			start.x -= my_speed;
+			set_edges();
+			if (start.x <= 0)
+			{
+				start.x = 0;
+				set_edges();
+				return bumps::on_left;
+			}
+		}
+		else if (move_sx < move_ex)
+		{
+			start.x += my_speed;
+			set_edges();
+			if (end.x >= scr_width)
+			{
+				end.x = scr_width;
+				start.x = end.x - _width;
+				set_edges();
+				return bumps::on_right;
+			}
+		}
+	}
+	else if (ver_dir)
+	{
+		if (move_sy > move_ey)
+		{
+			start.y -= my_speed;
+			set_edges();
+			if (start.y <= sky)
+			{
+				start.y = sky;
+				set_edges();
+				return bumps::on_top;
+			}
+		}
+		else if (move_sy < move_ey)
+		{
+			start.y += my_speed;
+			set_edges();
+			if (end.y >= ground) return bumps::out;
+		}
+	}
+	else
+	{
+		if (move_sx > move_ex)
+		{
+			start.x -= my_speed;
+			start.y = start.x * slope + intercept;
+			set_edges();
+			if (start.x <= 0)
+			{
+				start.x = 0;
+				set_edges();
+				return bumps::on_left;
+			}
+			if (start.y <= sky)
+			{
+				start.y = sky;
+				set_edges();
+				return bumps::on_top;
+			}
+			if (end.y >= ground) return bumps::out;
+		}
+		else if (move_sx < move_ex)
+		{
+			start.x += my_speed;
+			start.y = start.x * slope + intercept;
+			set_edges();
+			if (end.x >= scr_width)
+			{
+				end.x = scr_width;
+				start.x = end.x - _width;
+				set_edges();
+				return bumps::on_right;
+			}
+			if (start.y <= sky)
+			{
+				start.y = sky;
+				set_edges();
+				return bumps::on_top;
+			}
+			if (end.y >= ground) return bumps::out;
+		}
+	}
+	
+	return bumps::no_bump;
+}
+
+void dll::BALL::Release() 
+{
+	delete this;
+}
+
+dll::BALL* dll::BALL::create(float sx, float sy)
+{
+	return new BALL(sx, sy);
+}
+
+////////////////////////////////////////
