@@ -426,3 +426,87 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 }
 
 //////////////////////////////////////////
+
+// PAD CLASS ****************************
+
+dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 71.0f, 24.0f) {};
+
+void dll::PAD::move(float gear, dirs to_where)
+{
+	float my_speed = speed + gear / 10.0f;
+
+	dir = to_where;
+
+	switch (to_where)
+	{
+	case dirs::left:
+		if (start.x > 0)
+		{
+			start.x -= my_speed;
+			set_edges();
+		}
+		else
+		{
+			start.x = 0;
+			set_edges();
+			dir = dirs::stop;
+		}
+		break;
+
+	case dirs::right:
+		if (end.x < scr_width)
+		{
+			start.x += my_speed;
+			set_edges();
+		}
+		else
+		{
+			end.x = scr_width;
+			start.x = end.x - get_width();
+			set_edges();
+			dir = dirs::stop;
+		}
+		break;
+	}
+}
+
+pads dll::PAD::get_pad() const
+{
+	return(type);
+}
+void dll::PAD::set_pad(pads new_pad)
+{
+	switch (new_pad)
+	{
+	case pads::normal:
+		set_dims(71.0f, 24.0f);
+		break;
+
+	case pads::large:
+		set_dims(138.0f, 23.0f);
+		break;
+
+	case pads::extra_large:
+		set_dims(204.0f, 24.0f);
+		break;
+	}
+	
+	type = new_pad;
+}
+
+void dll::PAD::set_speed(float new_speed)
+{
+	speed = new_speed;
+}
+
+void dll::PAD::Release()
+{
+	delete this;
+}
+
+dll::PAD* dll::PAD::create(float sx, float sy)
+{
+	return new PAD(sx, sy);
+}
+
+////////////////////////////////////////

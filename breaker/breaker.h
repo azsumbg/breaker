@@ -24,8 +24,11 @@ constexpr int BAD_PARAM{ 6002 };
 constexpr int BAD_INDEX{ 6003 };
 constexpr int BAD_MEMORY{ 6004 };
 
+enum class dirs { stop = 0, left = 1, right = 2, up = 3, down = 4 };
 enum class bricks { yellow = 0, blue = 1, red = 2, green = 3, orange = 4, stone = 5 };
 enum class assets { triple = 0, life = 1, shorten = 2, strech = 3 };
+enum class pads { normal = 0, large = 1, extra_large = 2 };
+
 
 struct BRICK
 {
@@ -480,6 +483,30 @@ namespace dll
 
 		void remove_brick(int number);
 		void remove_brick(D2D1_RECT_F brick_rect);
+	};
+
+	class BREAKER_API PAD :public PROTON
+	{
+	private:
+		pads type{ pads::normal };
+
+		float speed = 5.0f;
+
+		PAD(float _sx, float _sy);
+
+	public:
+		dirs dir = dirs::stop;
+
+		void move(float gear, dirs to_where);
+
+		pads get_pad() const;
+		void set_pad(pads new_pad);
+
+		void set_speed(float new_speed);
+
+		void Release();
+
+		static PAD* create(float sx, float sy);
 	};
 
 
