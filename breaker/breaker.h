@@ -18,6 +18,7 @@ constexpr float sky{ 50.0f };
 constexpr float ground{ 750.0f };
 
 constexpr D2D1_RECT_F FULL_SCREEN{ 0, 0, 1000.0f, 800.0f };
+constexpr D2D1_RECT_F GAME_SCREEN{ 0, 50.0f, 1000.0f, 750.0f };
 
 constexpr int BAD_PTR{ 6001 };
 constexpr int BAD_PARAM{ 6002 };
@@ -28,7 +29,9 @@ enum class dirs { stop = 0, left = 1, right = 2, up = 3, down = 4 };
 enum class bricks { yellow = 0, blue = 1, red = 2, green = 3, orange = 4, stone = 5 };
 enum class assets { triple = 0, life = 1, shorten = 2, strech = 3 };
 enum class pads { normal = 0, large = 1, extra_large = 2 };
-enum class bumps { no_bump = 0, on_pad = 1, on_left = 2, on_right = 3, on_top = 4, out = 5 };
+enum class bumps { no_bump = 0, on_pad = 1, on_brick = 2, on_left = 3, on_right = 4, on_top = 5, out = 6 };
+enum class fields { space = 0, fantasy = 1, planes = 2, forest = 3 };
+
 
 struct BRICK
 {
@@ -56,6 +59,8 @@ namespace dll
 		float operator()(float min, float max);
 	};
 
+	// BAG and EXCEPTIOM CLASSES ***************
+
 	class BREAKER_API EXCEPTION
 	{
 	private:
@@ -67,7 +72,6 @@ namespace dll
 		const wchar_t* getErr()const;
 	};
 
-	
 	#pragma warning(disable : 26439)
 
 	template<typename T> class BAG
@@ -427,7 +431,6 @@ namespace dll
 		}
 	};
 
-
 	///////////////////////////////////////////
 
 	class BREAKER_API PROTON
@@ -555,4 +558,42 @@ namespace dll
 		static BALL* create(float sx, float sy);
 	};
 
+	class BREAKER_API FIELD
+	{
+	private:
+		int frame = 0;
+		int max_frames = 0;
+		int frame_delay = 0;
+		int max_frame_delay = 0;
+
+		RANDIT _randerer{};
+
+		FIELD(fields _what);
+
+	public:
+		fields type{ fields::fantasy };
+		D2D1_RECT_F rect{ GAME_SCREEN };
+
+		int get_frame();
+		void Release();
+
+		static FIELD* create(fields what);
+	};
+
+	class BREAKER_API ASSET :public PROTON
+	{
+	private:
+		float speed{ 1.5f };
+
+		ASSET(assets _what, float _sx, float _sy);
+
+	public:
+		assets type{};
+
+		bool move(float gear);
+
+		void Release();
+
+		static ASSET* create(assets what, float sx, float sy);
+	};
 }

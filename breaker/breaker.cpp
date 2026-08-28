@@ -682,3 +682,89 @@ dll::BALL* dll::BALL::create(float sx, float sy)
 }
 
 ////////////////////////////////////////
+
+// CLASS FIELD *************************
+
+dll::FIELD::FIELD(fields _what)
+{
+	type = _what;
+
+	switch (type)
+	{
+	case fields::space:
+		max_frames = 5;
+		frame_delay = 13;
+		break;
+
+	case fields::fantasy:
+		max_frames = 71;
+		break;
+
+	case fields::planes:
+		max_frames = 3;
+		frame_delay = 22;
+		break;
+
+	case fields::forest:
+		max_frames = 17;
+		frame_delay = 4;
+		break;
+	}
+
+	max_frame_delay = frame_delay;
+}
+
+int dll::FIELD::get_frame()
+{
+	--frame_delay;
+	if (frame_delay <= 0)
+	{
+		frame_delay = max_frame_delay;
+		++frame;
+		if (frame > max_frames)frame = 0;
+	}
+
+	return frame;
+}
+void dll::FIELD::Release()
+{
+	delete this;
+}
+
+dll::FIELD* dll::FIELD::create(fields what)
+{
+	return new FIELD(what);
+}
+
+////////////////////////////////////////
+
+// CLASS ASSET *************************
+
+dll::ASSET::ASSET(assets _what, float _sx, float _sy) :PROTON(_sx, _sy, 40.0f, 35.0f)
+{
+	type = _what;
+}
+
+bool dll::ASSET::move(float gear)
+{
+	float my_speed = speed + gear / 10.0f;
+
+	start.y += my_speed;
+	set_edges();
+
+	if (start.y >= ground)return false;
+
+	return true;
+}
+
+void dll::ASSET::Release()
+{
+	delete this;
+}
+
+dll::ASSET* dll::ASSET::create(assets what, float sx, float sy)
+{
+	return new ASSET(what, sx, sy);
+}
+
+////////////////////////////////////////
