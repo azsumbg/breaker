@@ -768,3 +768,214 @@ dll::ASSET* dll::ASSET::create(assets what, float sx, float sy)
 }
 
 ////////////////////////////////////////
+
+// FUNCTIONS **************************
+
+void dll::BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, float pad_sx, float pad_ex)
+{
+	RANDIT _randerer{};
+
+	float to_where_x{ 0 };
+	float to_where_y{ 0 };
+
+	float bump_angle{ 0 };
+
+	float oppos{ 0 };
+	float adjanced{ 0 };
+
+	float temp_x{ 0 };
+
+	switch (where)
+	{
+	case bumps::on_left:
+		to_where_y = sky;
+		adjanced = Ball.start.y - bump_y;
+		oppos = Ball.start.x;
+		bump_angle = atan2f(oppos, adjanced) * 180.0f / 3.14f;
+		bump_angle = 180.0f - bump_angle;
+		bump_angle = bump_angle * 3.14f / 180.0f;
+		to_where_x = tanf(bump_angle) * Ball.start.y;
+		break;
+
+	case bumps::on_right:
+		to_where_y = sky;
+		adjanced = Ball.start.y - bump_y;
+		oppos = scr_width - Ball.start.x;
+		bump_angle = atan2f(oppos, adjanced) * 180.0f / 3.14f;
+		bump_angle = 180.0f - bump_angle;
+		bump_angle = bump_angle * 3.14f / 180.0f;
+		to_where_x = tanf(bump_angle) * Ball.start.y;
+		break;
+
+	case bumps::on_top:
+		Ball.set_speed(ball_default_speed);
+		if (Ball.get_init_x() > Ball.get_target_x())
+		{
+			to_where_y = ground;
+			adjanced = Ball.get_init_x() - bump_x;
+			oppos = Ball.get_init_y();
+			bump_angle = atan2f(oppos, adjanced);
+			temp_x = oppos / tanf(bump_angle);
+			to_where_x = Ball.start.x - temp_x;
+			break;
+		}
+		else if (Ball.get_init_x() < Ball.get_target_x())
+		{
+			to_where_y = ground;
+			adjanced = Ball.get_init_x() + bump_x;
+			oppos = Ball.get_init_y();
+			bump_angle = atan2f(oppos, adjanced);
+			temp_x = oppos / tanf(bump_angle);
+			to_where_x = Ball.start.x + temp_x;
+			break;
+		}
+		else
+		{
+			to_where_y = ground;
+			if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+			else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+		}
+		break;
+
+	case bumps::on_brick:
+		Ball.set_speed(ball_default_speed);
+		if (bump_y < Ball.center.y)
+		{
+			if (Ball.get_init_x() > Ball.get_target_x())
+			{
+				to_where_y = ground;
+				adjanced = Ball.get_init_x() - bump_x;
+				oppos = Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x - temp_x;
+				break;
+			}
+			else if (Ball.get_init_x() < Ball.get_target_x())
+			{
+				to_where_y = ground;
+				adjanced = Ball.get_init_x() + bump_x;
+				oppos = Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x + temp_x;
+				break;
+			}
+			else
+			{
+				to_where_y = ground;
+				if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+				else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+			}
+		}
+		else if (bump_y > Ball.center.y)
+		{
+			if (Ball.get_init_x() > Ball.get_target_x())
+			{
+				to_where_y = sky;
+				adjanced = Ball.get_init_x() - bump_x;
+				oppos = bump_y - Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x - temp_x;
+				break;
+			}
+			else if (Ball.get_init_x() < Ball.get_target_x())
+			{
+				to_where_y = sky;
+				adjanced = Ball.get_init_x() + bump_x;
+				oppos = bump_y - Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x + temp_x;
+				break;
+			}
+			else
+			{
+				to_where_y = sky;
+				if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+				else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+			}
+		}
+		else
+		{
+			to_where_y = sky;
+			if (Ball.start.x >= bump_x)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+			else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+		}
+		break;
+
+	case bumps::on_pad:
+		temp_x = (pad_ex - pad_sx) / 3.0f;
+		if ((bump_x >= pad_sx && bump_x < pad_sx + temp_x)
+			|| (bump_x >= pad_sx + 2.0f * temp_x && bump_x < pad_ex))Ball.set_speed(ball_default_speed + 0.5f);
+		
+		if (bump_y < Ball.center.y)
+		{
+			if (Ball.get_init_x() > Ball.get_target_x())
+			{
+				to_where_y = ground;
+				adjanced = Ball.get_init_x() - bump_x;
+				oppos = Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x - temp_x;
+				break;
+			}
+			else if (Ball.get_init_x() < Ball.get_target_x())
+			{
+				to_where_y = ground;
+				adjanced = Ball.get_init_x() + bump_x;
+				oppos = Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x + temp_x;
+				break;
+			}
+			else
+			{
+				to_where_y = ground;
+				if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+				else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+			}
+		}
+		else if (bump_y > Ball.center.y)
+		{
+			if (Ball.get_init_x() > Ball.get_target_x())
+			{
+				to_where_y = sky;
+				adjanced = Ball.get_init_x() - bump_x;
+				oppos = bump_y - Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x - temp_x;
+				break;
+			}
+			else if (Ball.get_init_x() < Ball.get_target_x())
+			{
+				to_where_y = sky;
+				adjanced = Ball.get_init_x() + bump_x;
+				oppos = bump_y - Ball.get_init_y();
+				bump_angle = atan2f(oppos, adjanced);
+				temp_x = oppos / tanf(bump_angle);
+				to_where_x = Ball.start.x + temp_x;
+				break;
+			}
+			else
+			{
+				to_where_y = sky;
+				if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+				else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+			}
+		}
+		else
+		{
+			to_where_y = sky;
+			if (Ball.start.x >= bump_x)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
+			else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+		}
+		break;
+	}
+
+	Ball.set_path(to_where_x, to_where_y);
+}

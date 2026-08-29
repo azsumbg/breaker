@@ -17,6 +17,8 @@ constexpr float scr_height{ 800.0f };
 constexpr float sky{ 50.0f };
 constexpr float ground{ 750.0f };
 
+constexpr float ball_default_speed{ 5.0f };
+
 constexpr D2D1_RECT_F FULL_SCREEN{ 0, 0, 1000.0f, 800.0f };
 constexpr D2D1_RECT_F GAME_SCREEN{ 0, 50.0f, 1000.0f, 750.0f };
 
@@ -518,7 +520,7 @@ namespace dll
 	class BREAKER_API BALL :public PROTON
 	{
 	private:
-		float speed{ 5.0f };
+		float speed{ ball_default_speed };
 
 		bool hor_dir = false;
 		bool ver_dir = false;
@@ -596,4 +598,6 @@ namespace dll
 
 		static ASSET* create(assets what, float sx, float sy);
 	};
+
+	void BREAKER_API BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, float pad_sx, float pad_ex);
 }
