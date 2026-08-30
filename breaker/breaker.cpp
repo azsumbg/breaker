@@ -233,7 +233,7 @@ dll::GRID::GRID(int number_of_bricks)
 
 	while (brick_counter < number_of_bricks)
 	{
-		for (int cols = 0; cols < 15; ++cols)
+		for (int cols = 0; cols < 19; ++cols)
 		{
 			BRICK dummy{};
 			
@@ -306,7 +306,7 @@ void dll::GRID::create_grid(int all_bricks)
 
 	while (brick_counter < all_bricks)
 	{
-		for (int cols = 0; cols < 15; ++cols)
+		for (int cols = 0; cols < 19; ++cols)
 		{
 			BRICK dummy{};
 
@@ -698,10 +698,11 @@ dll::FIELD::FIELD(fields _what)
 
 	case fields::fantasy:
 		max_frames = 71;
+		frame_delay = 1;
 		break;
 
 	case fields::planes:
-		max_frames = 3;
+		max_frames = 2;
 		frame_delay = 22;
 		break;
 
