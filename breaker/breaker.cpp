@@ -429,7 +429,7 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 
 // PAD CLASS ****************************
 
-dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 71.0f, 24.0f) {};
+dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 138.0f, 23.0f) {};
 
 void dll::PAD::move(float gear, dirs to_where)
 {
@@ -478,15 +478,15 @@ void dll::PAD::set_pad(pads new_pad)
 {
 	switch (new_pad)
 	{
-	case pads::normal:
+	case pads::shorter:
 		set_dims(71.0f, 24.0f);
 		break;
 
-	case pads::large:
+	case pads::normal:
 		set_dims(138.0f, 23.0f);
 		break;
 
-	case pads::extra_large:
+	case pads::large:
 		set_dims(204.0f, 24.0f);
 		break;
 	}

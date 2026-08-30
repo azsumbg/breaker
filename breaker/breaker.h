@@ -30,7 +30,7 @@ constexpr int BAD_MEMORY{ 6004 };
 enum class dirs { stop = 0, left = 1, right = 2, up = 3, down = 4 };
 enum class bricks { yellow = 0, blue = 1, red = 2, green = 3, orange = 4, stone = 5 };
 enum class assets { triple = 0, life = 1, shorten = 2, strech = 3 };
-enum class pads { normal = 0, large = 1, extra_large = 2 };
+enum class pads { normal = 0, large = 1, shorter = 2 };
 enum class bumps { no_bump = 0, on_pad = 1, on_brick = 2, on_left = 3, on_right = 4, on_top = 5, out = 6 };
 enum class fields { space = 0, fantasy = 1, planes = 2, forest = 3 };
 
