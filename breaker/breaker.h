@@ -600,4 +600,6 @@ namespace dll
 	};
 
 	void BREAKER_API BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, float pad_sx, float pad_ex);
+
+	bool BREAKER_API Intersect(D2D1_RECT_F first, D2D1_RECT_F second);
 }

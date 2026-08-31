@@ -429,7 +429,10 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 
 // PAD CLASS ****************************
 
-dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 138.0f, 23.0f) {};
+dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 138.0f, 23.0f) 
+{
+	speed = 10.0f;
+};
 
 void dll::PAD::move(float gear, dirs to_where)
 {
@@ -979,4 +982,12 @@ void dll::BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, fl
 	}
 
 	Ball.set_path(to_where_x, to_where_y);
+}
+
+bool Intersect(D2D1_RECT_F first, D2D1_RECT_F second)
+{
+	if (!(first.left >= second.right || first.right <= second.left
+		|| first.top >= second.bottom || first.bottom <= second.top))return true;
+
+	return false;
 }
