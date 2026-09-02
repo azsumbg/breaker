@@ -398,6 +398,15 @@ BRICK dll::GRID::get_brick(D2D1_RECT_F brick_rect)
 	return ret;
 }
 
+int dll::GRID::hit_brick(int number)
+{
+	if (number < 0 || number >= Bricks.size())return -10;
+
+	Bricks[number].lifes--;
+
+	return Bricks[number].lifes;
+}
+
 void dll::GRID::remove_brick(int number)
 {
 	if (number < 0 || number >= Bricks.size())return;
@@ -431,7 +440,7 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 
 dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 138.0f, 23.0f) 
 {
-	speed = 10.0f;
+	speed = 25.0f;
 };
 
 void dll::PAD::move(float gear, dirs to_where)
@@ -554,123 +563,75 @@ void dll::BALL::set_speed(float new_speed)
 
 void dll::BALL::set_path(float target_x, float target_y)
 {
-	ver_dir = false;
-	hor_dir = false;
-
 	move_sx = start.x;
 	move_ex = target_x;
 
 	move_sy = start.y;
 	move_ey = target_y;
 
-	if (move_sx == move_ex || (move_ex > move_sx && move_ex <= end.x))
-	{
-		ver_dir = true;
-		return;
-	}
-	if (move_sy == move_ey || (move_ey > move_sy && move_ey <= end.y))
-	{
-		hor_dir = true;
-		return;
-	}
+	delta_x = move_ex - move_sx;
+	delta_y = move_ey - move_sy;
 
-	slope = (move_ey - move_sy) / (move_ex - move_sx);
-	intercept = start.y - start.x * slope;
+	vec_lenght = (float)(sqrt((float)(pow(delta_x, 2) + (float)(pow(delta_y, 2)))));
+
+	vec_next_x = delta_x / vec_lenght;
+	vec_next_y = delta_y / vec_lenght;
+
 }
 
 bumps dll::BALL::move(float gear)
 {
 	float my_speed = speed + gear / 5.0f;
 
-	if (hor_dir)
+	start.x += vec_next_x * my_speed;
+	start.y += vec_next_y * my_speed;
+	set_edges();
+
+	if (move_sx > move_ex)
 	{
-		if (move_sx > move_ex)
+		if (start.x <= 0)
 		{
-			start.x -= my_speed;
+			start.x = 0;
 			set_edges();
-			if (start.x <= 0)
-			{
-				start.x = 0;
-				set_edges();
-				return bumps::on_left;
-			}
+			return bumps::on_left;
 		}
-		else if (move_sx < move_ex)
+		if (start.y <= sky)
 		{
-			start.x += my_speed;
+			start.y = sky;
 			set_edges();
-			if (end.x >= scr_width)
-			{
-				end.x = scr_width;
-				start.x = end.x - _width;
-				set_edges();
-				return bumps::on_right;
-			}
+			return bumps::on_top;
 		}
+		if (end.y >= ground) return bumps::out;
 	}
-	else if (ver_dir)
+	else if (move_sx < move_ex)
 	{
-		if (move_sy > move_ey)
+		if (end.x >= scr_width)
 		{
-			start.y -= my_speed;
+			end.x = scr_width;
+			start.x = end.x - _width;
 			set_edges();
-			if (start.y <= sky)
-			{
-				start.y = sky;
-				set_edges();
-				return bumps::on_top;
-			}
+			return bumps::on_right;
 		}
-		else if (move_sy < move_ey)
+		if (start.y <= sky)
 		{
-			start.y += my_speed;
+			start.y = sky;
 			set_edges();
-			if (end.y >= ground) return bumps::out;
+			return bumps::on_top;
 		}
+		if (end.y >= ground) return bumps::out;
 	}
 	else
 	{
-		if (move_sx > move_ex)
+		if (start.y <= sky)
 		{
-			start.x -= my_speed;
-			start.y = start.x * slope + intercept;
+			start.y = sky;
 			set_edges();
-			if (start.x <= 0)
-			{
-				start.x = 0;
-				set_edges();
-				return bumps::on_left;
-			}
-			if (start.y <= sky)
-			{
-				start.y = sky;
-				set_edges();
-				return bumps::on_top;
-			}
-			if (end.y >= ground) return bumps::out;
+			return bumps::on_top;
 		}
-		else if (move_sx < move_ex)
-		{
-			start.x += my_speed;
-			start.y = start.x * slope + intercept;
-			set_edges();
-			if (end.x >= scr_width)
-			{
-				end.x = scr_width;
-				start.x = end.x - _width;
-				set_edges();
-				return bumps::on_right;
-			}
-			if (start.y <= sky)
-			{
-				start.y = sky;
-				set_edges();
-				return bumps::on_top;
-			}
-			if (end.y >= ground) return bumps::out;
-		}
+		else if (end.y >= ground) return bumps::out;
 	}
-	
+
+
 	return bumps::no_bump;
 }
 

@@ -481,13 +481,15 @@ namespace dll
 	public:
 		int bricks_in_grid{ 0 };
 		int bricks_to_crush{ 0 };
-
+		
 		GRID(int number_of_bricks);
 
 		void create_grid(int all_bricks);
 
 		BRICK get_brick(int number);
 		BRICK get_brick(D2D1_RECT_F brick_rect);
+
+		int hit_brick(int number);
 
 		void remove_brick(int number);
 		void remove_brick(D2D1_RECT_F brick_rect);
@@ -522,16 +524,17 @@ namespace dll
 	private:
 		float speed{ ball_default_speed };
 
-		bool hor_dir = false;
-		bool ver_dir = false;
+		float delta_x{ 0 };
+		float delta_y{ 0 };
+		float vec_lenght{ 0 };
+
+		float vec_next_x{ 0 };
+		float vec_next_y{ 0 };
 
 		float move_sx{ 0 };
 		float move_ex{ 0 };
 		float move_sy{ 0 };
 		float move_ey{ 0 };
-
-		float slope{ 0 };
-		float intercept{ 0 };
 
 		int frame{ 0 };
 		int max_frames{ 3 };
