@@ -916,34 +916,27 @@ void dll::BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, fl
 
 	case bumps::on_pad:
 		temp_x = (pad_ex - pad_sx) / 3.0f;
-		if ((bump_x >= pad_sx && bump_x < pad_sx + temp_x)
-			|| (bump_x >= pad_sx + 2.0f * temp_x && bump_x < pad_ex))Ball.set_speed(ball_default_speed + 0.5f);
+		if ((bump_x >= pad_sx && bump_x <= pad_sx + temp_x)
+			|| (bump_x >= pad_sx + 2.0f * temp_x && bump_x < pad_ex))Ball.set_speed(ball_default_speed + 1.5f);
 		
-		if (Ball.get_init_x() > Ball.get_target_x())
+		if (bump_x >= pad_sx && bump_x <= pad_sx + temp_x)
 			{
 				to_where_y = sky;
-				adjanced = Ball.get_init_x() - bump_x;
-				oppos = Ball.get_init_y();
-				bump_angle = atan2f(oppos, adjanced);
-				temp_x = oppos / tanf(bump_angle);
-				to_where_x = Ball.start.x - temp_x;
+				to_where_x = _randerer(0.0f, pad_sx - temp_x);
 				break;
 			}
-		else if (Ball.get_init_x() < Ball.get_target_x())
+		else if (bump_x >= pad_sx + 2.0f * temp_x && bump_x <= pad_ex)
 			{
 				to_where_y = sky;
-				adjanced = Ball.get_init_x() + bump_x;
-				oppos = Ball.get_init_y();
-				bump_angle = atan2f(oppos, adjanced);
-				temp_x = oppos / tanf(bump_angle);
-				to_where_x = Ball.start.x + temp_x;
+				to_where_x = _randerer(pad_ex + temp_x + 10.0f, scr_width);
 				break;
 			}
 		else
 			{
 				to_where_y = sky;
-				if (_randerer(0, 2) == 1)to_where_x = Ball.end.x + 100.0f + _randerer(0.0f, 50.0f);
-				else to_where_x = Ball.start.x - (100.0f + _randerer(0.0f, 50.0f));
+				temp_x = (pad_ex - pad_sx) / 2.0f;
+				if (_randerer(0, 1) == 1)to_where_x = pad_sx + temp_x + _randerer(0.0f, 200.0f);
+				else to_where_x = pad_sx + temp_x - _randerer(0.0f, 200.0f);
 			}
 		break;	
 	}
