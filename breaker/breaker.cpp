@@ -229,7 +229,7 @@ dll::GRID::GRID(int number_of_bricks)
 	int stone_bricks = number_of_bricks / 10;
 
 	float brick_x = 5.0f;
-	float brick_y = 60.0f;
+	float brick_y = 120.0f;
 
 	while (brick_counter < number_of_bricks)
 	{
@@ -302,7 +302,7 @@ void dll::GRID::create_grid(int all_bricks)
 	int stone_bricks = all_bricks / 10;
 
 	float brick_x = 5.0f;
-	float brick_y = 60.0f;
+	float brick_y = 120.0f;
 
 	while (brick_counter < all_bricks)
 	{
@@ -440,7 +440,7 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 
 dll::PAD::PAD(float _sx, float _sy) :PROTON(_sx, _sy, 138.0f, 23.0f) 
 {
-	speed = 25.0f;
+	speed = 40.0f;
 };
 
 void dll::PAD::move(float gear, dirs to_where)

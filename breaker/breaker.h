@@ -17,7 +17,7 @@ constexpr float scr_height{ 800.0f };
 constexpr float sky{ 50.0f };
 constexpr float ground{ 750.0f };
 
-constexpr float ball_default_speed{ 2.0f };
+constexpr float ball_default_speed{ 4.0f };
 
 constexpr D2D1_RECT_F FULL_SCREEN{ 0, 0, 1000.0f, 800.0f };
 constexpr D2D1_RECT_F GAME_SCREEN{ 0, 50.0f, 1000.0f, 750.0f };
