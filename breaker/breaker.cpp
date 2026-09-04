@@ -434,6 +434,27 @@ void dll::GRID::remove_brick(D2D1_RECT_F brick_rect)
 	if (ret.number != -1)Bricks.erase(ret.number);
 }
 
+void dll::GRID::set_custom_grid(BAG<BRICK>& custom_grid)
+{
+	Bricks = custom_grid;
+
+	int stone_bricks = 0;
+
+	for (int i = 0; i < custom_grid.size(); ++i)
+	{
+		if (custom_grid[i].type == bricks::stone)++stone_bricks;
+		else break;
+	}
+
+	bricks_in_grid = custom_grid.size();
+	bricks_to_crush = bricks_in_grid - stone_bricks;
+}
+
+size_t dll::GRID::grid_size() const
+{
+	return Bricks.size();
+}
+
 //////////////////////////////////////////
 
 // PAD CLASS ****************************
@@ -935,8 +956,8 @@ void dll::BallDispatcher(BALL& Ball, bumps where, float bump_x, float bump_y, fl
 			{
 				to_where_y = sky;
 				temp_x = (pad_ex - pad_sx) / 2.0f;
-				if (_randerer(0, 1) == 1)to_where_x = pad_sx + temp_x + _randerer(0.0f, 200.0f);
-				else to_where_x = pad_sx + temp_x - _randerer(0.0f, 200.0f);
+				if (_randerer(0, 1) == 1)to_where_x = pad_sx + temp_x + _randerer(0.0f, 300.0f);
+				else to_where_x = pad_sx + temp_x - _randerer(0.0f, 300.0f);
 			}
 		break;	
 	}

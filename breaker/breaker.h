@@ -493,6 +493,10 @@ namespace dll
 
 		void remove_brick(int number);
 		void remove_brick(D2D1_RECT_F brick_rect);
+
+		void set_custom_grid(BAG<BRICK>& custom_grid);
+
+		size_t grid_size() const;
 	};
 
 	class BREAKER_API PAD :public PROTON
