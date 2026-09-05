@@ -443,7 +443,6 @@ void dll::GRID::set_custom_grid(BAG<BRICK>& custom_grid)
 	for (int i = 0; i < custom_grid.size(); ++i)
 	{
 		if (custom_grid[i].type == bricks::stone)++stone_bricks;
-		else break;
 	}
 
 	bricks_in_grid = custom_grid.size();
